@@ -1,73 +1,147 @@
-# Welcome to your Lovable project
+<img width="1903" height="868" alt="image" src="https://github.com/user-attachments/assets/5fb80f0b-fc78-4931-9525-da6d3ab2b420" /># Diggin Bloom — Modern Café Website 🍽️✨
 
-## Project info
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Vercel](https://img.shields.io/badge/deploy-vercel-black)
+![Tech](https://img.shields.io/badge/stack-React%20%7C%20Tailwind%20%7C%20Vite-blue)
+![License](https://img.shields.io/badge/license-open%20use-lightgrey)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A modern, high-performance café website inspired by **Diggin Café**, built to showcase menu, ambience, and café experience in a premium, web-first format.  
+Designed to look clean, responsive, fast, and client-ready — suitable for pitching to real cafés & restaurants.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🌐 Live Preview
 
-**Use Lovable**
+**Vercel Deployment:**  
+https://diggin-bloom.vercel.app/
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Deploy to Vercel
 
-**Use your preferred IDE**
+Click below to deploy your own instance:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🎯 Project Objective
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+This project demonstrates how an outdated or basic café website can be transformed into a **premium digital experience** with:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- ✔ Better UI/UX  
+- ✔ Modern animations  
+- ✔ Responsive layouts  
+- ✔ High-quality web design  
+- ✔ Production-ready deployment  
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## 🚀 Features
+
+- Beautiful hero header with branding
+- Fully responsive layout for all devices
+- Categorized menu section
+- Ambience-focused gallery
+- About & Contact sections
+- Footer with branding + navigation
+- Deployed globally via Vercel
+
+---
+
+## 🧩 Tech Stack
+
+| Layer | Tools |
+|---|---|
+| **Frontend** | React, Tailwind CSS |
+| **Build Tool** | Vite |
+| **Deployment** | Vercel |
+| **Icons** | Lucide / Remix Icons |
+
+---
+
+
+
+---
+
+## 🛠️ Local Setup & Development
+
+Clone the repository:
+
+```bash
+git clone https://github.com/SharmaVansh1910/diggin-bloom.git
+
+---
+
+Navigate into the folder:
+
+cd diggin-bloom
+
+---
+
+Install dependencies:
+
+npm install
+
+---
+
+Start dev server:
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Local server runs at:
 
-**Use GitHub Codespaces**
+http://localhost:5173/
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+*##📦 *Production Build*
 
-This project is built with:
+Build optimized production bundle:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+npm run build
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Preview build:
 
-## Can I connect a custom domain to my Lovable project?
+npm run preview
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+🔌 Optional Integrations (Future Scope)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Potential future upgrades include:
+Table & Event Booking System
+
+Online Ordering & Payments
+
+User Login + Order History
+
+Admin Dashboard for Menu & Analytics
+
+These can convert this into a client-ready café SaaS system.
+
+🧑‍💻 Author
+
+Vansh Sharma
+
+B.Tech IT (BPIT Delhi)
+Full Stack Developer & UI/UX Enthusiast
+
+📄 License
+
+This project is open for learning and improvements.
+Not affiliated with Diggin Café or its brands.
+
+🌟 Contributions
+
+Contributions are welcome!
+If you want to add features, fix issues, or improve UI/UX — feel free to open a pull request.
+
+💬 Feedback
+
+For collaboration, suggestions, or freelancing inquiries:
+Feel free to reach out anytime!
