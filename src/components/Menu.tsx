@@ -1,11 +1,21 @@
 import { useState } from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { menuItems, menuCategories, type MenuItem } from '@/data/menuData';
-import { Search } from 'lucide-react';
+import { useCart } from './CartContext';
+import { Search, Plus, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
-function MenuCard({ item }: { item: MenuItem }) {
+function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    onAdd();
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1500);
+  };
+
   return (
-    <div className="menu-card p-5 flex gap-4">
+    <div className="menu-card p-5 flex gap-4 group">
       {/* Veg/Non-Veg Badge */}
       <div className="flex-shrink-0 pt-1">
         <div className={item.isVeg ? 'badge-veg' : 'badge-nonveg'} />
@@ -22,9 +32,22 @@ function MenuCard({ item }: { item: MenuItem }) {
               <span className="tag-bestseller mt-1.5">★ Bestseller</span>
             )}
           </div>
-          <span className="font-semibold text-olive whitespace-nowrap">
-            ₹{item.price}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-olive whitespace-nowrap">
+              ₹{item.price}
+            </span>
+            <button
+              onClick={handleAdd}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                isAdded
+                  ? 'bg-green-500 text-white'
+                  : 'bg-olive/10 text-olive hover:bg-olive hover:text-cream'
+              }`}
+              aria-label={`Add ${item.name} to cart`}
+            >
+              {isAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
           {item.description}
@@ -38,6 +61,7 @@ export function Menu() {
   const [activeCategory, setActiveCategory] = useState('coffee');
   const [searchQuery, setSearchQuery] = useState('');
   const { ref: sectionRef, isVisible } = useScrollReveal<HTMLElement>();
+  const { addItem } = useCart();
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = item.category === activeCategory;
@@ -49,6 +73,11 @@ export function Menu() {
   });
 
   const currentCategory = menuCategories.find((c) => c.id === activeCategory);
+
+  const handleAddItem = (item: MenuItem) => {
+    addItem(item);
+    toast.success(`Added ${item.name} to cart`);
+  };
 
   return (
     <section
@@ -137,7 +166,7 @@ export function Menu() {
               className="animate-fade-up"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <MenuCard item={item} />
+              <MenuCard item={item} onAdd={() => handleAddItem(item)} />
             </div>
           ))}
         </div>
