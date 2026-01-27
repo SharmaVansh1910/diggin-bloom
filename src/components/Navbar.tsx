@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, User, Calendar } from 'lucide-react';
+import { Menu, X, Phone, User, Calendar, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdmin } from '@/hooks/useAdmin';
 import { CartButton } from './CartButton';
 
 const navLinks = [
@@ -18,6 +19,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -93,6 +95,16 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
             <CartButton />
             
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 transition-colors"
+              >
+                <Shield className="w-4 h-4" />
+                <span className="text-sm font-medium">Admin</span>
+              </Link>
+            )}
+            
             {user ? (
               <Link
                 to="/profile"
@@ -164,6 +176,17 @@ export function Navbar() {
               Events
             </Link>
             <hr className="border-border" />
+            
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 py-2 text-amber-600 font-medium"
+              >
+                <Shield className="w-4 h-4" />
+                Admin Dashboard
+              </Link>
+            )}
             
             {user ? (
               <Link
