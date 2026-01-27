@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { Calendar, Clock, Users, MessageSquare, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Calendar, Clock, Users, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -25,6 +28,8 @@ const timeSlots = [
 ];
 
 export function Reservation() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof ReservationForm, string>>>({});
@@ -60,6 +65,13 @@ export function Reservation() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast.error('Please sign in to make a reservation');
+      navigate('/auth', { state: { from: '/' } });
+      return;
+    }
+
     setIsSubmitting(true);
     setErrors({});
 
@@ -69,8 +81,24 @@ export function Reservation() {
         guests: Number(formData.guests),
       });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Build reservation name with business meeting flag
+      const reservationName = validatedData.businessMeeting 
+        ? `Business Meeting - ${validatedData.fullName}` 
+        : `Table Reservation - ${validatedData.fullName}`;
+
+      // Save to database
+      const { error } = await supabase.from('event_bookings').insert({
+        user_id: user.id,
+        name: reservationName,
+        people_count: validatedData.guests,
+        booking_date: validatedData.date,
+        booking_time: validatedData.time,
+        contact: validatedData.mobile,
+        notes: validatedData.specialRequest || null,
+        status: 'pending',
+      });
+
+      if (error) throw error;
       
       setIsSubmitted(true);
       toast.success('Reservation request submitted successfully!');
@@ -84,6 +112,9 @@ export function Reservation() {
         });
         setErrors(fieldErrors);
         toast.error('Please fix the errors in the form');
+      } else {
+        console.error('Error submitting reservation:', error);
+        toast.error('Failed to submit reservation. Please try again.');
       }
     } finally {
       setIsSubmitting(false);
@@ -353,13 +384,29 @@ export function Reservation() {
                   </span>
                 </label>
 
+                {/* Sign-in prompt */}
+                {!user && (
+                  <div className="p-3 rounded-xl bg-olive/10 border border-olive/20 mb-4">
+                    <p className="text-sm text-foreground text-center">
+                      Please <button type="button" onClick={() => navigate('/auth')} className="text-olive underline font-medium">sign in</button> to complete your reservation.
+                    </p>
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full btn-hero-primary !py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full btn-hero-primary !py-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Request Reservation'}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Request Reservation'
+                  )}
                 </button>
 
                 <p className="text-xs text-muted-foreground text-center">

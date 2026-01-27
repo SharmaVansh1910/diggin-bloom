@@ -15,6 +15,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Events from "./pages/Events";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/refund" element={<RefundPolicy />} />
