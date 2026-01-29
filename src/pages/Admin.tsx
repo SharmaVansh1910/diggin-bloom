@@ -14,8 +14,17 @@ import {
   Clock, 
   XCircle,
   Loader2,
-  Shield
+  Shield,
+  Truck,
+  Package
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface OrderItem {
   name: string;
@@ -143,12 +152,64 @@ export default function Admin() {
     }
   }
 
-  const getStatusBadge = (status: string) => {
+  async function updateOrderStatus(orderId: string, newStatus: string) {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: newStatus })
+        .eq('id', orderId);
+
+      if (error) throw error;
+      
+      toast.success(`Order ${newStatus}`);
+      fetchData();
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast.error('Failed to update order');
+    }
+  }
+
+  const getOrderStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
         return (
           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
             <CheckCircle className="w-3 h-3" /> Confirmed
+          </span>
+        );
+      case 'delivered':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
+            <Truck className="w-3 h-3" /> Delivered
+          </span>
+        );
+      case 'cancelled':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+            <XCircle className="w-3 h-3" /> Cancelled
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
+            <Package className="w-3 h-3" /> {status}
+          </span>
+        );
+    }
+  };
+
+  const getBookingStatusBadge = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+            <CheckCircle className="w-3 h-3" /> Confirmed
+          </span>
+        );
+      case 'completed':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
+            <CheckCircle className="w-3 h-3" /> Completed
           </span>
         );
       case 'pending':
@@ -281,7 +342,22 @@ export default function Admin() {
                             {order.profiles?.email}
                           </p>
                         </div>
-                        {getStatusBadge(order.status)}
+                        <div className="flex items-center gap-2">
+                          {getOrderStatusBadge(order.status)}
+                          <Select
+                            value={order.status}
+                            onValueChange={(value) => updateOrderStatus(order.id, value)}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="confirmed">Confirmed</SelectItem>
+                              <SelectItem value="delivered">Delivered</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                       <div className="space-y-2 mb-4">
                         {order.items.map((item, idx) => (
@@ -331,7 +407,23 @@ export default function Admin() {
                             {booking.profiles?.full_name} • {booking.contact}
                           </p>
                         </div>
-                        {getStatusBadge(booking.status)}
+                        <div className="flex items-center gap-2">
+                          {getBookingStatusBadge(booking.status)}
+                          <Select
+                            value={booking.status}
+                            onValueChange={(value) => updateBookingStatus(booking.id, value)}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="confirmed">Confirmed</SelectItem>
+                              <SelectItem value="completed">Completed</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                       <div className="grid sm:grid-cols-3 gap-4 mb-4">
                         <div className="flex items-center gap-2 text-sm">
@@ -356,22 +448,6 @@ export default function Admin() {
                         <span className="text-sm text-muted-foreground">
                           Booked: {new Date(booking.created_at).toLocaleDateString('en-IN')}
                         </span>
-                        {booking.status === 'pending' && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => updateBookingStatus(booking.id, 'confirmed')}
-                              className="px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              onClick={() => updateBookingStatus(booking.id, 'cancelled')}
-                              className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   ))
