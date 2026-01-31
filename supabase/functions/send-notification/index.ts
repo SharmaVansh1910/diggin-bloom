@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "resend";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const MAILJET_API_KEY = Deno.env.get("MAILJET_API_KEY");
+const MAILJET_SECRET_KEY = Deno.env.get("MAILJET_SECRET_KEY");
 const ADMIN_EMAIL = "carbt0105@gmail.com";
 
 const corsHeaders = {
@@ -15,15 +15,12 @@ interface NotificationRequest {
   userEmail: string;
   userName: string;
   details: {
-    // Order details
     items?: Array<{ name: string; price: number; quantity: number }>;
     totalPrice?: number;
-    // Booking details
     date?: string;
     time?: string;
     guests?: number;
     specialRequest?: string;
-    // Inquiry details
     phone?: string;
     message?: string;
   };
@@ -90,6 +87,45 @@ function generateInquiryEmailHtml(userName: string, userEmail: string, details: 
   `;
 }
 
+async function sendMailjetEmail(to: string, toName: string, subject: string, htmlContent: string): Promise<{ success: boolean; error?: string }> {
+  const auth = btoa(`${MAILJET_API_KEY}:${MAILJET_SECRET_KEY}`);
+  
+  const response = await fetch("https://api.mailjet.com/v3.1/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Basic ${auth}`,
+    },
+    body: JSON.stringify({
+      Messages: [
+        {
+          From: {
+            Email: "noreply@diggin.co.in",
+            Name: "Diggin Café",
+          },
+          To: [
+            {
+              Email: to,
+              Name: toName,
+            },
+          ],
+          Subject: subject,
+          HTMLPart: htmlContent,
+        },
+      ],
+    }),
+  });
+
+  const result = await response.json();
+  
+  if (!response.ok) {
+    console.error("Mailjet error:", result);
+    return { success: false, error: result.ErrorMessage || "Failed to send email" };
+  }
+  
+  return { success: true };
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -130,18 +166,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send emails in parallel
     const [userEmailResult, adminEmailResult] = await Promise.all([
-      resend.emails.send({
-        from: "Diggin Café <onboarding@resend.dev>",
-        to: [userEmail],
-        subject: userSubject,
-        html: userHtml,
-      }),
-      resend.emails.send({
-        from: "Diggin Café <onboarding@resend.dev>",
-        to: [ADMIN_EMAIL],
-        subject: adminSubject,
-        html: adminHtml,
-      }),
+      sendMailjetEmail(userEmail, userName, userSubject, userHtml),
+      sendMailjetEmail(ADMIN_EMAIL, "Admin", adminSubject, adminHtml),
     ]);
 
     console.log("User email result:", userEmailResult);
