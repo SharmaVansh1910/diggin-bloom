@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { supabase } from '@/integrations/supabase/client';
 import { Mail, Phone, MapPin, Send, Instagram, Facebook } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -42,7 +43,25 @@ export function Contact() {
 
     try {
       contactSchema.parse(formData);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // Send confirmation emails
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'inquiry',
+            userEmail: formData.email,
+            userName: formData.name,
+            details: {
+              phone: formData.phone,
+              message: formData.message,
+            },
+          },
+        });
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Still show success since the inquiry was received
+      }
+      
       toast.success('Message sent successfully! We\'ll get back to you soon.');
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {

@@ -99,6 +99,26 @@ export function Reservation() {
       });
 
       if (error) throw error;
+
+      // Send confirmation emails
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'booking',
+            userEmail: validatedData.email,
+            userName: validatedData.fullName,
+            details: {
+              date: validatedData.date,
+              time: validatedData.time,
+              guests: validatedData.guests,
+              specialRequest: validatedData.specialRequest,
+            },
+          },
+        });
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't fail the booking if email fails
+      }
       
       setIsSubmitted(true);
       toast.success('Reservation request submitted successfully!');
