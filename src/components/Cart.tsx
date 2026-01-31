@@ -43,6 +43,24 @@ export function Cart() {
 
       if (error) throw error;
 
+      // Send confirmation emails
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'order',
+            userEmail: user.email,
+            userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer',
+            details: {
+              items: orderItems,
+              totalPrice,
+            },
+          },
+        });
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't fail the order if email fails
+      }
+
       clearCart();
       setIsOpen(false);
       toast.success('Order placed successfully! View it in your profile.');
