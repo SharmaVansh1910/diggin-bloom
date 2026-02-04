@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRazorpay } from '@/hooks/useRazorpay';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar, Clock, Users, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Users, MessageSquare, CheckCircle, Loader2, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+
+const RESERVATION_PRICE_PER_GUEST = 20; // ₹20 per guest
 
 const reservationSchema = z.object({
   fullName: z.string().trim().min(2, 'Name must be at least 2 characters').max(100),
@@ -30,6 +33,7 @@ const timeSlots = [
 export function Reservation() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { initiatePayment, isLoading: isPaymentLoading } = useRazorpay();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof ReservationForm, string>>>({});
@@ -63,6 +67,8 @@ export function Reservation() {
     }
   };
 
+  const reservationAmount = formData.guests * RESERVATION_PRICE_PER_GUEST;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -86,42 +92,46 @@ export function Reservation() {
         ? `Business Meeting - ${validatedData.fullName}` 
         : `Table Reservation - ${validatedData.fullName}`;
 
-      // Save to database
-      const { error } = await supabase.from('event_bookings').insert({
-        user_id: user.id,
-        name: reservationName,
-        people_count: validatedData.guests,
-        booking_date: validatedData.date,
-        booking_time: validatedData.time,
+      // Initiate payment
+      initiatePayment({
+        type: 'reservation',
+        guests: validatedData.guests,
+        bookingDate: validatedData.date,
+        bookingTime: validatedData.time,
+        bookingName: reservationName,
         contact: validatedData.mobile,
-        notes: validatedData.specialRequest || null,
-        status: 'pending',
+        notes: validatedData.specialRequest,
+        userEmail: validatedData.email,
+        userName: validatedData.fullName,
+        onSuccess: async (referenceId) => {
+          // Send confirmation emails
+          try {
+            await supabase.functions.invoke('send-notification', {
+              body: {
+                type: 'booking',
+                userEmail: validatedData.email,
+                userName: validatedData.fullName,
+                details: {
+                  date: validatedData.date,
+                  time: validatedData.time,
+                  guests: validatedData.guests,
+                  specialRequest: validatedData.specialRequest,
+                },
+              },
+            });
+          } catch (emailError) {
+            console.error('Failed to send confirmation email:', emailError);
+          }
+          
+          setIsSubmitted(true);
+          setIsSubmitting(false);
+          toast.success('Reservation confirmed with payment!');
+        },
+        onFailure: (error) => {
+          console.error('Payment failed:', error);
+          setIsSubmitting(false);
+        },
       });
-
-      if (error) throw error;
-
-      // Send confirmation emails
-      try {
-        await supabase.functions.invoke('send-notification', {
-          body: {
-            type: 'booking',
-            userEmail: validatedData.email,
-            userName: validatedData.fullName,
-            details: {
-              date: validatedData.date,
-              time: validatedData.time,
-              guests: validatedData.guests,
-              specialRequest: validatedData.specialRequest,
-            },
-          },
-        });
-      } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
-        // Don't fail the booking if email fails
-      }
-      
-      setIsSubmitted(true);
-      toast.success('Reservation request submitted successfully!');
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Partial<Record<keyof ReservationForm, string>> = {};
@@ -136,7 +146,6 @@ export function Reservation() {
         console.error('Error submitting reservation:', error);
         toast.error('Failed to submit reservation. Please try again.');
       }
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -153,11 +162,11 @@ export function Reservation() {
               <CheckCircle className="w-10 h-10 text-cream" />
             </div>
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-cream mb-6">
-              Reservation Request Received!
+              Reservation Confirmed!
             </h2>
             <p className="text-cream/80 text-lg mb-8">
-              Thank you for choosing Diggin Café. Our team will confirm your reservation 
-              shortly via SMS/email. We look forward to hosting you!
+              Thank you for choosing Diggin Café. Your table has been reserved and payment received.
+              We look forward to hosting you!
             </p>
             <button
               onClick={() => {
@@ -236,6 +245,15 @@ export function Reservation() {
                 <div>
                   <p className="font-medium text-cream">Special Requests</p>
                   <p className="text-sm">Celebrations, dietary needs & more</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 text-cream/80">
+                <div className="w-12 h-12 rounded-full bg-cream/10 flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-cream" />
+                </div>
+                <div>
+                  <p className="font-medium text-cream">₹20 per Guest</p>
+                  <p className="text-sm">Secure your table with a small booking fee</p>
                 </div>
               </div>
             </div>
@@ -404,9 +422,17 @@ export function Reservation() {
                   </span>
                 </label>
 
+                {/* Booking Amount */}
+                <div className="p-4 rounded-xl bg-olive/10 border border-olive/20">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-foreground">Booking Fee ({formData.guests} {formData.guests === 1 ? 'guest' : 'guests'} × ₹{RESERVATION_PRICE_PER_GUEST})</span>
+                    <span className="font-semibold text-olive text-lg">₹{reservationAmount}</span>
+                  </div>
+                </div>
+
                 {/* Sign-in prompt */}
                 {!user && (
-                  <div className="p-3 rounded-xl bg-olive/10 border border-olive/20 mb-4">
+                  <div className="p-3 rounded-xl bg-olive/10 border border-olive/20">
                     <p className="text-sm text-foreground text-center">
                       Please <button type="button" onClick={() => navigate('/auth')} className="text-olive underline font-medium">sign in</button> to complete your reservation.
                     </p>
@@ -416,22 +442,24 @@ export function Reservation() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isPaymentLoading}
                   className="w-full btn-hero-primary !py-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? (
+                  {isSubmitting || isPaymentLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Submitting...
+                      Processing...
                     </>
                   ) : (
-                    'Request Reservation'
+                    <>
+                      <CreditCard className="w-5 h-5" />
+                      Pay ₹{reservationAmount} & Reserve
+                    </>
                   )}
                 </button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  By submitting, you agree to our reservation policy. 
-                  Confirmation will be sent within 2 hours.
+                  UPI & Card payments only. Booking fee is non-refundable.
                 </p>
               </div>
             </form>
