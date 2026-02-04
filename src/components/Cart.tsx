@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRazorpay } from '@/hooks/useRazorpay';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { X, Plus, Minus, ShoppingBag, Loader2 } from 'lucide-react';
+import { X, Plus, Minus, ShoppingBag, Loader2, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 
 export function Cart() {
   const { items, totalItems, totalPrice, isOpen, setIsOpen, updateQuantity, removeItem, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { initiatePayment, isLoading: isPaymentLoading } = useRazorpay();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleCheckout = async () => {
@@ -27,50 +29,46 @@ export function Cart() {
 
     setIsCheckingOut(true);
 
-    try {
-      const orderItems = items.map((item) => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      }));
+    const orderItems = items.map((item) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
 
-      const { error } = await supabase.from('orders').insert({
-        user_id: user.id,
-        items: orderItems,
-        total_price: totalPrice,
-        status: 'confirmed',
-      });
-
-      if (error) throw error;
-
-      // Send confirmation emails
-      try {
-        await supabase.functions.invoke('send-notification', {
-          body: {
-            type: 'order',
-            userEmail: user.email,
-            userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer',
-            details: {
-              items: orderItems,
-              totalPrice,
+    initiatePayment({
+      type: 'food_order',
+      items: orderItems,
+      userEmail: user.email || '',
+      userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer',
+      onSuccess: async (referenceId) => {
+        // Send confirmation emails
+        try {
+          await supabase.functions.invoke('send-notification', {
+            body: {
+              type: 'order',
+              userEmail: user.email,
+              userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer',
+              details: {
+                items: orderItems,
+                totalPrice,
+              },
             },
-          },
-        });
-      } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
-        // Don't fail the order if email fails
-      }
+          });
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+        }
 
-      clearCart();
-      setIsOpen(false);
-      toast.success('Order placed successfully! View it in your profile.');
-      navigate('/profile');
-    } catch (error) {
-      console.error('Error placing order:', error);
-      toast.error('Failed to place order. Please try again.');
-    } finally {
-      setIsCheckingOut(false);
-    }
+        clearCart();
+        setIsOpen(false);
+        setIsCheckingOut(false);
+        toast.success('Order placed successfully! View it in your profile.');
+        navigate('/profile');
+      },
+      onFailure: (error) => {
+        console.error('Payment failed:', error);
+        setIsCheckingOut(false);
+      },
+    });
   };
 
   if (!isOpen) return null;
@@ -165,17 +163,18 @@ export function Cart() {
               </div>
               <button
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || isPaymentLoading}
                 className="w-full btn-hero-primary !py-4 flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {isCheckingOut ? (
+                {isCheckingOut || isPaymentLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
                     Processing...
                   </>
                 ) : (
                   <>
-                    Checkout • ₹{totalPrice}
+                    <CreditCard className="w-5 h-5" />
+                    Pay ₹{totalPrice}
                   </>
                 )}
               </button>
@@ -184,6 +183,9 @@ export function Cart() {
                   You'll need to sign in to complete checkout
                 </p>
               )}
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                UPI & Card payments only
+              </p>
             </div>
           )}
         </div>

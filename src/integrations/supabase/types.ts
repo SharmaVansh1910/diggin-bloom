@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       event_bookings: {
         Row: {
+          amount_paid: number | null
           booking_date: string
           booking_time: string
           contact: string
@@ -23,12 +24,18 @@ export type Database = {
           id: string
           name: string
           notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: string | null
           people_count: number
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          amount_paid?: number | null
           booking_date: string
           booking_time: string
           contact: string
@@ -36,12 +43,18 @@ export type Database = {
           id?: string
           name: string
           notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           people_count: number
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          amount_paid?: number | null
           booking_date?: string
           booking_time?: string
           contact?: string
@@ -49,7 +62,12 @@ export type Database = {
           id?: string
           name?: string
           notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           people_count?: number
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -66,27 +84,45 @@ export type Database = {
       }
       orders: {
         Row: {
+          amount_paid: number | null
           created_at: string
           id: string
           items: Json
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           status: string
           total_price: number
           updated_at: string
           user_id: string
         }
         Insert: {
+          amount_paid?: number | null
           created_at?: string
           id?: string
           items: Json
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           status?: string
           total_price: number
           updated_at?: string
           user_id: string
         }
         Update: {
+          amount_paid?: number | null
           created_at?: string
           id?: string
           items?: Json
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           status?: string
           total_price?: number
           updated_at?: string
@@ -101,6 +137,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          razorpay_signature: string | null
+          reference_id: string
+          reference_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          reference_id: string
+          reference_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          reference_id?: string
+          reference_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
