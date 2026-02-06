@@ -160,7 +160,7 @@ export function Contact() {
               <p className="font-medium text-foreground mb-4">Follow Us</p>
               <div className="flex gap-4">
                 <a
-                  href="https://instagram.com/diggin.cafe"
+                  href="https://www.instagram.com/diggincafe/?hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 rounded-full bg-olive/10 flex items-center justify-center text-olive hover:bg-olive hover:text-cream transition-colors"
@@ -169,7 +169,7 @@ export function Contact() {
                   <Instagram className="w-5 h-5" />
                 </a>
                 <a
-                  href="https://facebook.com/diggincafe"
+                  href="https://www.facebook.com/diggincafe/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 rounded-full bg-olive/10 flex items-center justify-center text-olive hover:bg-olive hover:text-cream transition-colors"
