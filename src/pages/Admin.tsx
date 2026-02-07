@@ -111,6 +111,38 @@ export default function Admin() {
     }
   }, [isAdmin, activeTab]);
 
+  // Real-time subscriptions for auto-updates
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const ordersChannel = supabase
+      .channel('admin-orders')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        () => {
+          if (activeTab === 'orders') fetchData();
+        }
+      )
+      .subscribe();
+
+    const bookingsChannel = supabase
+      .channel('admin-bookings')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'event_bookings' },
+        () => {
+          if (activeTab === 'bookings') fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ordersChannel);
+      supabase.removeChannel(bookingsChannel);
+    };
+  }, [isAdmin, activeTab]);
+
   async function fetchData() {
     setIsLoading(true);
     try {
@@ -690,7 +722,6 @@ export default function Admin() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="pending">Pending</SelectItem>
                                 <SelectItem value="confirmed">Confirmed</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
                                 <SelectItem value="cancelled">Cancelled</SelectItem>
