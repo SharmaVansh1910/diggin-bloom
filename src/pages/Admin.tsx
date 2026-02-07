@@ -19,7 +19,8 @@ import {
   Package,
   CreditCard,
   IndianRupee,
-  Filter
+  Filter,
+  Trash2
 } from 'lucide-react';
 import {
   Select,
@@ -28,6 +29,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
 interface OrderItem {
   name: string;
@@ -214,6 +227,40 @@ export default function Admin() {
     } catch (error) {
       console.error('Error updating order:', error);
       toast.error('Failed to update order');
+    }
+  }
+
+  async function deleteOrder(orderId: string) {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+
+      if (error) throw error;
+      
+      toast.success('Order deleted successfully');
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      toast.error('Failed to delete order');
+    }
+  }
+
+  async function deleteBooking(bookingId: string) {
+    try {
+      const { error } = await supabase
+        .from('event_bookings')
+        .delete()
+        .eq('id', bookingId);
+
+      if (error) throw error;
+      
+      toast.success('Booking deleted successfully');
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      toast.error('Failed to delete booking');
     }
   }
 
@@ -624,9 +671,35 @@ export default function Admin() {
                             </Select>
                           )}
                         </div>
-                        <span className="font-semibold text-olive">
-                          Total: ₹{order.total_price}
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <span className="font-semibold text-olive">
+                            Total: ₹{order.total_price}
+                          </span>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm" className="h-8">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Order</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete this order? This action cannot be undone and will permanently remove the order from the database.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteOrder(order.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </div>
                     </div>
                   ))
@@ -729,11 +802,37 @@ export default function Admin() {
                             </Select>
                           )}
                         </div>
-                        {booking.payment_status === 'paid' && (
-                          <span className="font-semibold text-olive">
-                            Paid: ₹{booking.amount_paid}
-                          </span>
-                        )}
+                        <div className="flex items-center gap-3">
+                          {booking.payment_status === 'paid' && (
+                            <span className="font-semibold text-olive">
+                              Paid: ₹{booking.amount_paid}
+                            </span>
+                          )}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm" className="h-8">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete this booking? This action cannot be undone and will permanently remove the booking from the database.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteBooking(booking.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </div>
                     </div>
                   ))
