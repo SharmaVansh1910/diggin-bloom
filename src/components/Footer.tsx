@@ -1,4 +1,5 @@
 import { Instagram, Facebook, MapPin, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const quickLinks = [
   { href: '#home', label: 'Home' },
@@ -151,13 +152,13 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-6">
             {legalLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className="text-sm text-cream/50 hover:text-cream transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
