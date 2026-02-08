@@ -19,78 +19,121 @@ export default function RefundPolicy() {
 
         <div className="prose prose-lg max-w-none">
           <p className="text-muted-foreground mb-6">
-            Last updated: January 2026
+            Last updated: February 2026
           </p>
 
-          <section className="mb-8">
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              1. Reservation Deposits
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              For group reservations requiring a deposit:
+          <div className="bg-terracotta/10 border border-terracotta/20 rounded-lg p-4 mb-8">
+            <p className="text-foreground font-medium">
+              Important: Diggin Cafe follows a strict refund policy. Please read the following terms carefully 
+              before placing an order or making a reservation.
             </p>
-            <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-              <li>Full refund if cancelled 48+ hours before the reservation</li>
-              <li>50% refund if cancelled 24-48 hours before the reservation</li>
-              <li>No refund for cancellations less than 24 hours before the reservation</li>
-            </ul>
-          </section>
+          </div>
 
           <section className="mb-8">
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              2. Gift Cards & Vouchers
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Gift cards and promotional vouchers are non-refundable but can be transferred 
-              to another person. Lost or stolen gift cards cannot be replaced. Gift cards 
-              are valid for 12 months from the date of purchase.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              3. Event Bookings
+              1. Eligible Refund Conditions
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              For private events and large group bookings:
+              Refunds are allowed only under the following circumstances:
             </p>
             <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-              <li>Full refund if cancelled 7+ days before the event</li>
-              <li>50% refund if cancelled 3-7 days before the event</li>
-              <li>No refund for cancellations less than 3 days before the event</li>
+              <li><strong>Spoiled Food:</strong> If the food delivered is spoiled, stale, or has gone bad</li>
+              <li><strong>Damaged Items:</strong> If food items are damaged during delivery and are not consumable</li>
+              <li><strong>Unpacked/Unsealed Food:</strong> If food packaging is open, tampered with, or unsealed upon delivery</li>
+              <li><strong>Wrong Order:</strong> If you receive a completely different order than what was placed</li>
+              <li><strong>Missing Items:</strong> Refund for the specific items that were not delivered (not the entire order)</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              In case of unforeseen circumstances on our end, we will offer a full refund 
-              or reschedule the event at no additional cost.
+              To be eligible for a refund, you must report the issue within 30 minutes of delivery with clear 
+              photographic evidence of the problem.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              4. Food Quality Issues
+              2. Non-Refundable Conditions
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              The following situations do not qualify for refunds:
+            </p>
+            <ul className="list-disc pl-6 text-muted-foreground space-y-2">
+              <li><strong>Taste Preference:</strong> Refunds are not provided if you do not like the taste, 
+              spice level, or flavour of the food</li>
+              <li><strong>Delivery Delays:</strong> Delays caused by traffic, weather, or high demand do not 
+              qualify for refunds</li>
+              <li><strong>Wrong Address:</strong> If you provide an incorrect or incomplete delivery address, 
+              no refund will be issued</li>
+              <li><strong>Partially Consumed Items:</strong> Food that has been partially eaten or consumed 
+              is not eligible for refund</li>
+              <li><strong>Late Reporting:</strong> Issues reported after 30 minutes of delivery</li>
+              <li><strong>Change of Mind:</strong> Orders cannot be refunded if you simply change your mind 
+              after placing the order</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
+              3. Table Reservation Fee Policy
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you're not satisfied with the quality of your food or service, please 
-              inform our staff immediately. We will address your concerns promptly and 
-              may offer a replacement dish, discount, or refund at our discretion. 
-              Claims must be made during your visit.
+              The reservation fee of <strong>₹20 per guest</strong> charged at the time of booking is 
+              <strong> strictly non-refundable</strong> under any circumstances, including:
             </p>
+            <ul className="list-disc pl-6 text-muted-foreground space-y-2 mt-4">
+              <li>Cancellation of reservation (regardless of timing)</li>
+              <li>No-show at the restaurant</li>
+              <li>Reduction in the number of guests</li>
+              <li>Change of date or time (new reservation fee will apply)</li>
+            </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              5. Refund Processing
+              4. Refund Processing
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              For approved refunds:
+            </p>
+            <ul className="list-disc pl-6 text-muted-foreground space-y-2">
+              <li>Refunds will be processed to the <strong>original payment method</strong> used at the 
+              time of purchase (UPI or Card)</li>
+              <li>Processing time: 5-7 business days after approval</li>
+              <li>Bank processing times may add additional 2-3 business days</li>
+              <li>Refund amount will not include any applicable delivery charges unless the entire order is refunded</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
+              5. How to Request a Refund
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              To request a refund:
+            </p>
+            <ol className="list-decimal pl-6 text-muted-foreground space-y-2">
+              <li>Contact us within 30 minutes of receiving your order</li>
+              <li>Provide your order ID and registered phone number</li>
+              <li>Submit clear photographs showing the issue with the food</li>
+              <li>Describe the problem in detail</li>
+              <li>Wait for our team to review and respond within 24 hours</li>
+            </ol>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
+              6. Final Decision Authority
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Approved refunds will be processed within 5-7 business days. Refunds will 
-              be credited to the original payment method used. Bank processing times may 
-              vary and are outside our control.
+              The final decision on all refund requests rests solely with Diggin Cafe. Our customer service 
+              team will review each case individually and make a fair determination based on the evidence 
+              provided. Diggin Cafe reserves the right to deny refund requests that do not meet the eligibility 
+              criteria or where fraudulent activity is suspected.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
-              6. Contact Us
+              7. Contact Us
             </h2>
             <p className="text-muted-foreground leading-relaxed">
               For refund inquiries, please contact:
@@ -98,6 +141,7 @@ export default function RefundPolicy() {
             <ul className="mt-4 text-muted-foreground">
               <li>Email: support@diggin.co.in</li>
               <li>Phone: +91 11 2688 7890</li>
+              <li>Hours: 10:00 AM - 10:00 PM (Monday to Sunday)</li>
             </ul>
           </section>
         </div>
