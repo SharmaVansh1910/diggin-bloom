@@ -1,35 +1,41 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export default function PrivacyPolicy() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+
   return (
     <div className="min-h-screen bg-cream py-20">
       <div className="section-container max-w-4xl">
         <Link 
           to="/" 
-          className="inline-flex items-center gap-2 text-olive hover:text-olive-dark mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-olive hover:text-olive-dark mb-8 transition-colors animate-fade-in"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
         </Link>
 
-        <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8">
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 animate-fade-in [animation-delay:100ms]">
           Privacy Policy
         </h1>
 
-        <div className="prose prose-lg max-w-none">
-          <p className="text-muted-foreground mb-6">
+        <div ref={ref} className="prose prose-lg max-w-none">
+          <p className={`text-muted-foreground mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+             style={{ transitionDelay: '150ms' }}>
             Last updated: February 2026
           </p>
 
-          <p className="text-muted-foreground leading-relaxed mb-8">
+          <p className={`text-muted-foreground leading-relaxed mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+             style={{ transitionDelay: '200ms' }}>
             Diggin Cafe ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy 
             explains how we collect, use, and safeguard your information when you visit our website, use our 
             mobile application, or dine at any of our locations: Anand Lok, Chanakyapuri, Bikaner House, 
             Connaught Place, Tagore Garden, and 'Gardin' by Diggin.
           </p>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '250ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               1. Information We Collect
             </h2>
@@ -48,7 +54,8 @@ export default function PrivacyPolicy() {
             </ul>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '300ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               2. Purpose of Data Usage
             </h2>
@@ -67,7 +74,8 @@ export default function PrivacyPolicy() {
             </ul>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '350ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               3. Payment Information Security
             </h2>
@@ -80,7 +88,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '400ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               4. Data Sharing Policy
             </h2>
@@ -103,7 +112,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '450ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               5. Cookies & Analytics
             </h2>
@@ -122,7 +132,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '500ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               6. Your Rights
             </h2>
@@ -142,7 +153,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '550ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               7. Data Retention
             </h2>
@@ -154,7 +166,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '600ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               8. Children's Privacy
             </h2>
@@ -165,7 +178,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '650ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               9. Governing Law
             </h2>
@@ -176,7 +190,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '700ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               10. Changes to This Policy
             </h2>
@@ -186,7 +201,8 @@ export default function PrivacyPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '750ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               11. Contact Us
             </h2>

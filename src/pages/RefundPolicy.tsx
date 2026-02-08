@@ -1,35 +1,41 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export default function RefundPolicy() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+
   return (
     <div className="min-h-screen bg-cream py-20">
       <div className="section-container max-w-4xl">
         <Link 
           to="/" 
-          className="inline-flex items-center gap-2 text-olive hover:text-olive-dark mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-olive hover:text-olive-dark mb-8 transition-colors animate-fade-in"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
         </Link>
 
-        <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8">
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8 animate-fade-in [animation-delay:100ms]">
           Refund Policy
         </h1>
 
-        <div className="prose prose-lg max-w-none">
-          <p className="text-muted-foreground mb-6">
+        <div ref={ref} className="prose prose-lg max-w-none">
+          <p className={`text-muted-foreground mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+             style={{ transitionDelay: '150ms' }}>
             Last updated: February 2026
           </p>
 
-          <div className="bg-terracotta/10 border border-terracotta/20 rounded-lg p-4 mb-8">
+          <div className={`bg-terracotta/10 border border-terracotta/20 rounded-lg p-4 mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+               style={{ transitionDelay: '200ms' }}>
             <p className="text-foreground font-medium">
               Important: Diggin Cafe follows a strict refund policy. Please read the following terms carefully 
               before placing an order or making a reservation.
             </p>
           </div>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '250ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               1. Eligible Refund Conditions
             </h2>
@@ -49,7 +55,8 @@ export default function RefundPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '300ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               2. Non-Refundable Conditions
             </h2>
@@ -71,7 +78,8 @@ export default function RefundPolicy() {
             </ul>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '350ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               3. Table Reservation Fee Policy
             </h2>
@@ -87,7 +95,8 @@ export default function RefundPolicy() {
             </ul>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '400ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               4. Refund Processing
             </h2>
@@ -103,7 +112,8 @@ export default function RefundPolicy() {
             </ul>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '450ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               5. How to Request a Refund
             </h2>
@@ -119,7 +129,8 @@ export default function RefundPolicy() {
             </ol>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '500ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               6. Final Decision Authority
             </h2>
@@ -131,7 +142,8 @@ export default function RefundPolicy() {
             </p>
           </section>
 
-          <section className="mb-8">
+          <section className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                   style={{ transitionDelay: '550ms' }}>
             <h2 className="font-serif text-2xl font-semibold text-foreground mb-4">
               7. Contact Us
             </h2>
